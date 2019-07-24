@@ -44,7 +44,7 @@ func getNameOfFunc(value string) string {
 	index := strings.Index(value, ".Test")
 	result := value
 	if index != -1 {
-		result = value[index:len(value)]
+		result = value[index+1 : len(value)]
 	}
 	return result
 }
