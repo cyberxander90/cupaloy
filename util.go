@@ -41,7 +41,7 @@ func getNameOfCaller() string {
 }
 
 func getNameOfFunc(value string) string {
-	index := strings.Index(value, "-Test")
+	index := strings.Index(value, ".Test")
 	result := value
 	if index != -1 {
 		result = value[index:len(value)]
