@@ -33,19 +33,20 @@ type TestingT interface {
 }
 
 func getNameOfCaller() string {
-	pc := make([]uintptr, 15)
-	n := runtime.Callers(2, pc)
-	frames := runtime.CallersFrames(pc[:n])
-	frame, _ := frames.Next()
-	return strings.Replace(frame.Function, ".", "-", -1)
-}
-
-func getNameOfCallerOld() string {
 	pc, _, _, _ := runtime.Caller(2) // first caller is the caller of this function, we want the caller of our caller
 	fullPath := runtime.FuncForPC(pc).Name()
 	packageFunctionName := filepath.Base(fullPath)
 
-	return strings.Replace(packageFunctionName, ".", "-", -1)
+	return strings.Replace(getNameOfFunc(packageFunctionName), ".", "-", -1)
+}
+
+func getNameOfFunc(value string) string {
+	index := strings.Index(value, "-Test")
+	result := value
+	if index != -1 {
+		result = value[index:len(value)]
+	}
+	return result
 }
 
 func envVariableSet(envVariable string) bool {
