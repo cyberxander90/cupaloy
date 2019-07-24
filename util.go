@@ -9,8 +9,6 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/bradleyjkemp/cupaloy/v2/internal"
-
 	"github.com/davecgh/go-spew/spew"
 	"github.com/pmezard/go-difflib/difflib"
 )
@@ -35,6 +33,14 @@ type TestingT interface {
 }
 
 func getNameOfCaller() string {
+	pc := make([]uintptr, 15)
+	n := runtime.Callers(2, pc)
+	frames := runtime.CallersFrames(pc[:n])
+	frame, _ := frames.Next()
+	return strings.Replace(frame.Function, ".", "-", -1)
+}
+
+func getNameOfCallerOld() string {
 	pc, _, _, _ := runtime.Caller(2) // first caller is the caller of this function, we want the caller of our caller
 	fullPath := runtime.FuncForPC(pc).Name()
 	packageFunctionName := filepath.Base(fullPath)
@@ -114,13 +120,13 @@ func (c *Config) updateSnapshot(snapshotName string, prevSnapshot string, snapsh
 	snapshotDiff := diffSnapshots(prevSnapshot, snapshot)
 
 	if isNewSnapshot {
-		return internal.ErrSnapshotCreated{
+		return ErrSnapshotCreated{
 			Name:     snapshotName,
 			Contents: snapshot,
 		}
 	}
 
-	return internal.ErrSnapshotUpdated{
+	return ErrSnapshotUpdated{
 		Name: snapshotName,
 		Diff: snapshotDiff,
 	}

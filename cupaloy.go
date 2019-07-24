@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-
-	"github.com/bradleyjkemp/cupaloy/v2/internal"
 )
 
 // New constructs a new, configured instance of cupaloy using the given
@@ -105,7 +103,7 @@ func (c *Config) snapshot(snapshotName string, i ...interface{}) error {
 		if c.createNewAutomatically {
 			return c.updateSnapshot(snapshotName, prevSnapshot, snapshot)
 		}
-		return internal.ErrNoSnapshot{Name: snapshotName}
+		return ErrNoSnapshot{Name: snapshotName}
 	}
 	if err != nil {
 		return err
@@ -121,7 +119,7 @@ func (c *Config) snapshot(snapshotName string, i ...interface{}) error {
 		return c.updateSnapshot(snapshotName, prevSnapshot, snapshot)
 	}
 
-	return internal.ErrSnapshotMismatch{
+	return ErrSnapshotMismatch{
 		Diff: diffSnapshots(prevSnapshot, snapshot),
 	}
 }
